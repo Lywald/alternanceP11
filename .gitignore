@@ -3,6 +3,5 @@ include
 lib
 Scripts/
 .Python
-tests/
 .envrc
 __pycache__
