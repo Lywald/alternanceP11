@@ -22,12 +22,13 @@ def clubs_fixture():
 
 @pytest.fixture
 def client(competitions_fixture, clubs_fixture, monkeypatch):
+    # Simulating a client
     monkeypatch.setattr('server.clubs', clubs_fixture)
     monkeypatch.setattr('server.competitions', competitions_fixture)
     return app.test_client()
 
 def test_purchasePlaces_sad_invalid_competition(client, competitions_fixture, clubs_fixture):
-    # with app.test_client() as client:
+    # L'utilisateur tente une requête avec une compétition inconnue
     response = client.post('/purchasePlaces', data=dict(
         places='1',
         competition='Test invalide compétition',
@@ -36,7 +37,7 @@ def test_purchasePlaces_sad_invalid_competition(client, competitions_fixture, cl
     assert b'Competition invalide' in response.data
 
 def test_purchasePlaces_sad_invalid_club(client, competitions_fixture, clubs_fixture):
-    #with app.test_client() as client:
+    # L'utilisateur tente une requête avec un club inconnue
     response = client.post('/purchasePlaces', data=dict(
         places='1',
         competition='Pierre Festival',
@@ -45,8 +46,7 @@ def test_purchasePlaces_sad_invalid_club(client, competitions_fixture, clubs_fix
     assert b'Club invalide' in response.data
 
 def test_purchasePlaces_happy(client, competitions_fixture, clubs_fixture):
-    # Test purchasing places
-    
+    # L'utilisateur achète des places, et on met à jour ses points    
     assert int(competitions_fixture[0]['numberOfPlaces']) == 25
     assert int(clubs_fixture[0]['points']) == 10
 
