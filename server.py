@@ -64,7 +64,7 @@ def purchasePlaces():
     if placesRequired > int(club["points"]):
         return render_template('error.html', message="Not enough points in the club"), 500
 
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+    competition['numberOfPlaces'] = str(int(competition['numberOfPlaces'])-placesRequired)
     club["points"] = str(int(club["points"]) - placesRequired)
     saveClubs()
     saveCompetitions()
