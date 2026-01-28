@@ -81,8 +81,16 @@ def purchasePlaces():
 
     competition['numberOfPlaces'] = str(int(competition['numberOfPlaces'])-placesRequired)
     club["points"] = str(int(club["points"]) - placesRequired)
+    
+    current_booking = next((b for b in bookings if b['club'] == club['name'] and b['competition'] == competition['name']), None)
+    if current_booking:
+        current_booking['places'] += placesRequired
+    else:
+        bookings.append({'club': club['name'], 'competition': competition['name'], 'places': placesRequired})
+    
     saveClubs()
     saveCompetitions()
+    saveBookings()
 
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
