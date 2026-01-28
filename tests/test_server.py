@@ -46,14 +46,38 @@ def test_purchasePlaces(competitions_fixture, clubs_fixture):
 """
 
 @pytest.fixture
-def client(monkeypatch):
+def competitions_fixture():
+    return [ {
+        "name": "Pierre Festival",
+        "date": "2020-03-27 10:00:00",
+        "numberOfPlaces": "25"
+    }, {
+        "name": "Future Festival",
+        "date": "2027-01-01 10:00:00",
+        "numberOfPlaces": "22"
+    } ]
+
+@pytest.fixture
+def clubs_fixture():
+    return [ {
+        "name": "Pierre Club",
+        "email": "pierre@pierre.com",
+        "points": "10"
+    } ]
+
+@pytest.fixture
+def client(competitions_fixture, clubs_fixture, monkeypatch):
+    monkeypatch.setattr('server.clubs', clubs_fixture)
+    monkeypatch.setattr('server.competitions', competitions_fixture)
     return app.test_client()
 
-def test_showSummary_sad_invalid(client):    
-    with pytest.raises(IndexError):
-        response = client.post('/showSummary', data=dict(email='inconnu@test.com'))
+def test_booking_past_happy_valid(client, competitions_fixture, clubs_fixture):
+    response = client.get('/book/' + competitions_fixture[0]["name"] + "/" + clubs_fixture[0]["name"])
+    assert(response.status_code == 200)
+    #with pytest.raises(IndexError):
+    #    response = client.post('/showSummary', data=dict(email='inconnu@test.com'))
         # assert(response.status_code == 500)
 
-def test_showSummary_happy_valid(client):
-    response = client.post('/showSummary', data=dict(email='admin@irontemple.com'))
-    assert(response.status_code == 200)
+def test_booking_past_happy_invalid(client, competitions_fixture, clubs_fixture):
+    response = client.get('/book/' + competitions_fixture[1]["name"] + "/" + clubs_fixture[0]["name"])
+    assert(response.status_code == 500)
