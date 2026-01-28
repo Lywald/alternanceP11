@@ -25,6 +25,8 @@ def client(competitions_fixture, clubs_fixture, monkeypatch):
     # Simulating a client
     monkeypatch.setattr('server.clubs', clubs_fixture)
     monkeypatch.setattr('server.competitions', competitions_fixture)
+    monkeypatch.setattr('server.saveClubs', lambda: None)
+    monkeypatch.setattr('server.saveCompetitions', lambda: None)
     return app.test_client()
 
 def test_purchasePlaces_sad_invalid_competition(client, competitions_fixture, clubs_fixture):
