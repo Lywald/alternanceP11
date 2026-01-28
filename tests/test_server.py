@@ -6,16 +6,16 @@ import pytest
 
 @pytest.fixture
 def client(monkeypatch):
-    # Client de test pour requêtes
+    # Test client for requests
     return app.test_client()
 
 def test_showSummary_sad_invalid(client):    
-    # Tentative de connexion par une email invalide
+    # Login attempt with invalid email
     response = client.post('/showSummary', data=dict(email='inconnu@test.com'))
     assert(response.status_code == 500)
     assert b'Email invalide' in response.data
 
 def test_showSummary_happy_valid(client):
-    # Tentative de connexion par une email valide
+    # Login attempt with valid email
     response = client.post('/showSummary', data=dict(email='admin@irontemple.com'))
     assert(response.status_code == 200)
