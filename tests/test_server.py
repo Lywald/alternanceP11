@@ -28,7 +28,7 @@ def client(competitions_fixture, clubs_fixture, monkeypatch):
     return app.test_client()
 
 def test_purchasePlaces_sad_invalid_competition(client, competitions_fixture, clubs_fixture):
-    # L'utilisateur tente une requête avec une compétition inconnue
+    # User attempts a request with an unknown competition
     response = client.post('/purchasePlaces', data=dict(
         places='1',
         competition='Test invalide compétition',
@@ -37,7 +37,7 @@ def test_purchasePlaces_sad_invalid_competition(client, competitions_fixture, cl
     assert b'Competition invalide' in response.data
 
 def test_purchasePlaces_sad_invalid_club(client, competitions_fixture, clubs_fixture):
-    # L'utilisateur tente une requête avec un club inconnue
+    # User attempts a request with an unknown club
     response = client.post('/purchasePlaces', data=dict(
         places='1',
         competition='Pierre Festival',
@@ -46,11 +46,10 @@ def test_purchasePlaces_sad_invalid_club(client, competitions_fixture, clubs_fix
     assert b'Club invalide' in response.data
 
 def test_purchasePlaces_happy(client, competitions_fixture, clubs_fixture):
-    # L'utilisateur achète des places, et on met à jour ses points    
+    # User buys places and updates their points
     assert int(competitions_fixture[0]['numberOfPlaces']) == 25
     assert int(clubs_fixture[0]['points']) == 10
 
-    # with app.test_client() as client:
     response = client.post('/purchasePlaces', data=dict(places=1, competition="Pierre Festival", club="Pierre Club"))
     
     # Check the POST succeeded
