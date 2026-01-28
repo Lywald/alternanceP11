@@ -45,13 +45,14 @@ def test_purchasePlaces_sad_invalid_club(client, competitions_fixture, clubs_fix
     ))
     assert b'Club invalide' in response.data
 
-def test_purchasePlaces_happy(client, competitions_fixture, clubs_fixture):
+def test_purchasePlaces_happy_decount(client, competitions_fixture, clubs_fixture):
     # User buys places and updates their points
     assert int(competitions_fixture[0]['numberOfPlaces']) == 25
     assert int(clubs_fixture[0]['points']) == 10
 
     response = client.post('/purchasePlaces', data=dict(places=1, competition="Pierre Festival", club="Pierre Club"))
-    
+    #response = client.post('/purchasePlaces', data=dict(places=1, competition=competitions_fixture[0], club=clubs_fixture[0]))
+
     # Check the POST succeeded
     assert response.status_code == 200
     assert b'Great-booking complete!' in response.data
@@ -59,3 +60,4 @@ def test_purchasePlaces_happy(client, competitions_fixture, clubs_fixture):
     # Check points got deducted
     assert int(competitions_fixture[0]['numberOfPlaces']) == 24
     assert int(clubs_fixture[0]['points']) == 9
+
