@@ -38,5 +38,6 @@ def test_booking_past_competition(client, competitions_fixture, clubs_fixture):
     assert(b"Competition is past" in response.data)
 
 def test_booking_future_competition(client, competitions_fixture, clubs_fixture):
+    # Future competitions are booked successfully
     response = client.get('/book/' + competitions_fixture[1]["name"] + "/" + clubs_fixture[0]["name"])
     assert(response.status_code == 200)
