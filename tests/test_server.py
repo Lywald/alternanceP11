@@ -80,7 +80,7 @@ def test_purchasePlaces_sad_exceedingDozen(client, competitions_fixture, clubs_f
         competition='Pierre Festival',
         club='Pierre Club'
     ))
-    assert(response.status_code == 500)
+    assert(response.status_code == 200)
     assert(b'Dozen places exceeded' in response.data)
 
 def test_purchasePlaces_happy_underDozen(client, competitions_fixture, clubs_fixture, bookings_fixture):

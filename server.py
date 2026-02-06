@@ -63,21 +63,29 @@ def purchasePlaces():
     try: 
         competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     except IndexError:
-        return render_template('error.html', message="Competition invalide"), 500
+        flash("Competition invalide")
+        return render_template('welcome.html', club=None, competitions=competitions)
 
     try:
         club = [c for c in clubs if c['name'] == request.form['club']][0]
     except IndexError:
-        return render_template('error.html', message="Club invalide"), 500
+        flash("Club invalide")
+        return render_template('welcome.html', club=None, competitions=competitions)
 
     placesRequired = int(request.form['places'])
 
+    if placesRequired > int(competition['numberOfPlaces']):
+        flash("Not enough places available in the competition")
+        return render_template('welcome.html', club=club, competitions=competitions)
+
     if placesRequired > int(club["points"]):
-        return render_template('error.html', message="Not enough points in the club"), 500
+        flash("Not enough points in the club")
+        return render_template('welcome.html', club=club, competitions=competitions)
 
     places_booked = sum([b['places'] for b in bookings if b['club'] == club['name'] and b['competition'] == competition['name']])
     if places_booked + placesRequired > 12:
-        return render_template('error.html', message="Dozen places exceeded. Requesting too many bookings on this competition"), 500
+        flash("Dozen places exceeded. Requesting too many bookings on this competition")
+        return render_template('welcome.html', club=club, competitions=competitions)
 
     competition['numberOfPlaces'] = str(int(competition['numberOfPlaces'])-placesRequired)
     club["points"] = str(int(club["points"]) - placesRequired)
