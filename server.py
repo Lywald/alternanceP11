@@ -29,7 +29,9 @@ def showSummary():
     club_list = [club for club in clubs if club['email'] == request.form['email']]
     if not club_list:
         flash("Email invalide")
-        return render_template('error.html', message="Email invalide"), 500
+        return redirect(url_for('index'))
+        #return render_template('error.html', message="Email invalide"), 500
+        #return render_template('welcome.html', club=None, competitions=competitions)
     return render_template('welcome.html', club=club_list[0], competitions=competitions)
 
 
