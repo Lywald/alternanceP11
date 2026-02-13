@@ -44,7 +44,8 @@
 
 5. Testing
 
-   * Scripts/python -m pytest tests/test_server.py -v
+     **TESTS UNITAIRES**
+     * Scripts/python -m pytest tests/test_server.py -v
 
     You are free to use whatever testing framework you like-the main thing is that you can show what tests you are using.
 
@@ -54,9 +55,12 @@
      
    * Scripts/python -m pytest tests/test_server.py --cov=server --cov-report=term-missing
 
-     Integration tests:
+   **TESTS INTEGRATION**:
    * Scripts/pip install selenium
    * Scripts/python -m pytest tests/test_integration.py -v
+  
+   **TEST FONCTIONNEL**
+   * Scripts/python -m pytest tests/test_functional.py -v
 
 5. Running
 
