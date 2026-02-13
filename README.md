@@ -65,3 +65,7 @@
    **PERFORMANCES**
    * locust -f .\locustfile.py
 
+5. Running
+
+   * $env:FLASK_APP="server.py"
+   * flask run
