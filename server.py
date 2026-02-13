@@ -32,8 +32,13 @@ def index():
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']][0]
-    return render_template('welcome.html',club=club,competitions=competitions)
+    club_list = [club for club in clubs if club['email'] == request.form['email']]
+    if not club_list:
+        flash("Email invalide")
+        return redirect(url_for('index'))
+        #return render_template('error.html', message="Email invalide"), 500
+        #return render_template('welcome.html', club=None, competitions=competitions)
+    return render_template('welcome.html', club=club_list[0], competitions=competitions)
 
 
 @app.route('/book/<competition>/<club>')
@@ -75,10 +80,6 @@ def purchasePlaces():
 
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
-
-
-# TODO: Add route for points display
-
 
 @app.route('/logout')
 def logout():
