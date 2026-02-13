@@ -114,6 +114,10 @@ def purchasePlaces():
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
+@app.route('/points')
+def listPoints():
+    return render_template('points.html', clubs=loadClubs())
+
 @app.route('/logout')
 def logout():
     return redirect(url_for('index'))
