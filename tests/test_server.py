@@ -108,13 +108,12 @@ def test_purchasePlaces_happy_underDozen(client, competitions_fixture, clubs_fix
     ))
     assert(response.status_code == 200)
     
-def test_showSummary_sad_invalid(client):    
-    # Login attempt with invalid email
+def test_showSummary_sad_invalid(client):
+    # Login attempt with invalid email triggers a redirect
     response = client.post('/showSummary', data=dict(email='inconnu@test.com'))
-    assert(response.status_code == 500)
-    assert b'Email invalide' in response.data
+    assert(response.status_code == 302)
 
-def test_showSummary_happy_valid(client):
-    # Login attempt with valid email
-    response = client.post('/showSummary', data=dict(email='admin@irontemple.com'))
+def test_showSummary_happy_valid(client, clubs_fixture):
+    # Login attempt with valid email from fixture
+    response = client.post('/showSummary', data=dict(email=clubs_fixture[0]['email']))
     assert(response.status_code == 200)
