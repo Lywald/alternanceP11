@@ -26,11 +26,22 @@ def clubs_fixture():
     } ]
 
 @pytest.fixture
-def client(competitions_fixture, clubs_fixture, monkeypatch):
+def bookings_fixture():
+    return [ {
+      "club": "Pierre Club",
+      "competition": "Pierre Festival",
+      "places": 10
+    } ]
+
+@pytest.fixture
+def client(competitions_fixture, clubs_fixture, bookings_fixture, monkeypatch):
+    # Simulating a client
     monkeypatch.setattr('server.clubs', clubs_fixture)
     monkeypatch.setattr('server.competitions', competitions_fixture)
+    monkeypatch.setattr('server.bookings', bookings_fixture)
     monkeypatch.setattr('server.saveClubs', lambda: None)
     monkeypatch.setattr('server.saveCompetitions', lambda: None)
+    monkeypatch.setattr('server.saveBookings', lambda: None)
     return app.test_client()
 
 def test_booking_past_competition(client, competitions_fixture, clubs_fixture):
@@ -78,10 +89,25 @@ def test_purchasePlaces_happy_decount(client, competitions_fixture, clubs_fixtur
     assert int(competitions_fixture[0]['numberOfPlaces']) == 24
     assert int(clubs_fixture[0]['points']) == 9
 
-def client(monkeypatch):
-    # Test client for requests
-    return app.test_client()
+def test_purchasePlaces_sad_exceedingDozen(client, competitions_fixture, clubs_fixture, bookings_fixture):
+    # Since we are booking more than a dozen in this competition, send a error message
+    response = client.post('/purchasePlaces', data=dict(
+        places='3',
+        competition='Pierre Festival',
+        club='Pierre Club'
+    ))
+    assert(response.status_code == 200)
+    assert(b'Dozen places exceeded' in response.data)
 
+def test_purchasePlaces_happy_underDozen(client, competitions_fixture, clubs_fixture, bookings_fixture):
+    # Since we are booking less than a dozen total, then pass
+    response = client.post('/purchasePlaces', data=dict(
+        places='1',
+        competition='Pierre Festival',
+        club='Pierre Club'
+    ))
+    assert(response.status_code == 200)
+    
 def test_showSummary_sad_invalid(client):    
     # Login attempt with invalid email
     response = client.post('/showSummary', data=dict(email='inconnu@test.com'))

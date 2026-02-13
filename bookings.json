@@ -1,0 +1,29 @@
+{
+    "bookings": [
+        {
+            "club": "Simply Lift",
+            "competition": "Spring Festival",
+            "places": 3
+        },
+        {
+            "club": "Simply Lift",
+            "competition": "Fall Classic",
+            "places": 2
+        },
+        {
+            "club": "Iron Temple",
+            "competition": "Spring Festival",
+            "places": 5
+        },
+        {
+            "club": "She Lifts",
+            "competition": "Fall Classic",
+            "places": 10
+        },
+        {
+            "club": "Simply Lift",
+            "competition": "Future Comp",
+            "places": 12
+        }
+    ]
+}

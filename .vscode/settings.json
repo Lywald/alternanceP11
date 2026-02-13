@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd \"c:\\\\Users\\\\pierr\\\\Documents\\\\Python Projects\\\\alternanceP11v2\\\\Python_Testing_V2\\\\Python_Testing_V2\"; python -m pytest tests/test_server\\.py::test_purchasePlaces_sad_invalid_competition -v$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

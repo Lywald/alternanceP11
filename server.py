@@ -21,10 +21,21 @@ def saveCompetitions():
     with open('competitions.json', 'w') as comps:
         json.dump({'competitions': competitions}, comps, indent=4)
 
+def loadBookings():
+    with open('bookings.json') as bk:
+        listOfBooked = json.load(bk)['bookings']
+        return listOfBooked
+    
+def saveBookings():
+    with open('bookings.json', 'w') as bk:
+        json.dump({'bookings': bookings}, bk, indent=4)
+
+
 app = Flask(__name__)
 app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
+bookings = loadBookings()
 clubs = loadClubs()
 
 @app.route('/')
@@ -74,15 +85,31 @@ def purchasePlaces():
 
     placesRequired = int(request.form['places'])
 
-    if placesRequired > int(club["points"]):
-        flash("Not enough points")
+    if placesRequired > int(competition['numberOfPlaces']):
+        flash("Not enough places available in the competition")
         return render_template('welcome.html', club=club, competitions=competitions)
 
+    if placesRequired > int(club["points"]):
+        flash("Not enough points in the club")
+        return render_template('welcome.html', club=club, competitions=competitions)
+
+    places_booked = sum([b['places'] for b in bookings if b['club'] == club['name'] and b['competition'] == competition['name']])
+    if places_booked + placesRequired > 12:
+        flash("Dozen places exceeded. Requesting too many bookings on this competition")
+        return render_template('welcome.html', club=club, competitions=competitions)
 
     competition['numberOfPlaces'] = str(int(competition['numberOfPlaces'])-placesRequired)
     club["points"] = str(int(club["points"]) - placesRequired)
+    
+    current_booking = next((b for b in bookings if b['club'] == club['name'] and b['competition'] == competition['name']), None)
+    if current_booking:
+        current_booking['places'] += placesRequired
+    else:
+        bookings.append({'club': club['name'], 'competition': competition['name'], 'places': placesRequired})
+    
     saveClubs()
     saveCompetitions()
+    saveBookings()
 
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
