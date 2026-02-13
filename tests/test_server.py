@@ -4,12 +4,17 @@ from server import loadClubs
 from server import purchasePlaces
 import pytest
 
+
 @pytest.fixture
 def competitions_fixture():
     return [ {
         "name": "Pierre Festival",
         "date": "2020-03-27 10:00:00",
         "numberOfPlaces": "25"
+    }, {
+        "name": "Future Festival",
+        "date": "2027-01-01 10:00:00",
+        "numberOfPlaces": "22"
     } ]
 
 @pytest.fixture
@@ -39,6 +44,17 @@ def client(competitions_fixture, clubs_fixture, bookings_fixture, monkeypatch):
     monkeypatch.setattr('server.saveBookings', lambda: None)
     return app.test_client()
 
+def test_booking_past_competition(client, competitions_fixture, clubs_fixture):
+    # Past competitions are rejected
+    response = client.get('/book/' + competitions_fixture[0]["name"] + "/" + clubs_fixture[0]["name"])
+    assert(response.status_code == 200)
+    assert(b"Competition is past" in response.data)
+
+def test_booking_future_competition(client, competitions_fixture, clubs_fixture):
+    # Future competitions are booked successfully
+    response = client.get('/book/' + competitions_fixture[1]["name"] + "/" + clubs_fixture[0]["name"])
+    assert(response.status_code == 200)
+    
 def test_purchasePlaces_sad_invalid_competition(client, competitions_fixture, clubs_fixture):
     # User attempts a request with an unknown competition
     response = client.post('/purchasePlaces', data=dict(
@@ -90,4 +106,15 @@ def test_purchasePlaces_happy_underDozen(client, competitions_fixture, clubs_fix
         competition='Pierre Festival',
         club='Pierre Club'
     ))
+    assert(response.status_code == 200)
+    
+def test_showSummary_sad_invalid(client):    
+    # Login attempt with invalid email
+    response = client.post('/showSummary', data=dict(email='inconnu@test.com'))
+    assert(response.status_code == 500)
+    assert b'Email invalide' in response.data
+
+def test_showSummary_happy_valid(client):
+    # Login attempt with valid email
+    response = client.post('/showSummary', data=dict(email='admin@irontemple.com'))
     assert(response.status_code == 200)
