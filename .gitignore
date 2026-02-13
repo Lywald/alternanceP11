@@ -5,3 +5,4 @@ Scripts/
 .Python
 .envrc
 __pycache__
+chromedriver.exe
