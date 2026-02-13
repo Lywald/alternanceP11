@@ -54,6 +54,10 @@
      
    * Scripts/python -m pytest tests/test_server.py --cov=server --cov-report=term-missing
 
+     Integration tests:
+   * Scripts/pip install selenium
+   * Scripts/python -m pytest tests/test_integration.py -v
+
 5. Running
 
    * $env:FLASK_APP="server.py"
