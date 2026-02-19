@@ -62,6 +62,9 @@
    **TEST FONCTIONNEL**
    * Scripts/python -m pytest tests/test_functional.py -v
 
+   **PERFORMANCE**
+   * locust -f .\locustfile.py
+
 5. Running
 
    * $env:FLASK_APP="server.py"
